@@ -4,9 +4,6 @@ const app = new express()
 
 app.use(require("cors")())
 
-app.get('/',async(req,res)=>{
-  res.send("test is ok")
-})
 
 var multer  = require('multer')
 const mediaStream = multer({ dest: 'mediaCache/' })
@@ -15,20 +12,21 @@ const ffmpeg = require('fluent-ffmpeg')
 // const outputPath = 'rtmp://localhost:1935/live/home'
 const outputPath = 'rtmp://39.106.198.9:1935/live/home'
 
-// const fs = require('fs')
-// let PIPEW = fs.createWriteStream('mediaCache/cacheMedia')
-let PIPER = fs.createReadStream('mediaCache/cacheMedia',{autoClose:false})
-// let inputPath = 'mediaCache/cacheMedia'
-PIPER.on('end',()=>{
-  console.log("wo")
+const transformStream = require('./transform')
+const rs = new transformStream()
+rs.on('data',chunk=>{
+  console.log("data is transfrom!")
 })
+rs.on('end',()=>{
+  console.log("end")
+})
+
 let command = 
-ffmpeg('https://oss.cloud.custouch.com/cus_files/leica001/video/webinar/webinar/sample_webinar_0617.mp4')
-// ffmpeg(inputPath)
+ffmpeg(rs)
 .addOptions([
   '-codec:a aac',
   '-ac 2',
-  '-ar 44100'
+  '-ar 44100',
 ])
 .on('start', function (commandLine) {
   console.log('[' + new Date() + '] Stream is Pushing !');
@@ -42,16 +40,20 @@ ffmpeg('https://oss.cloud.custouch.com/cus_files/leica001/video/webinar/webinar/
 .on('end', function () {
   console.log('[' + new Date() + '] Stream Pushing is Finished !');
 })
+.on('data',()=>{console.log("chunking")})
 .format('flv')
-command
 .output(outputPath)
 .run()
 
+// setTimeout(()=>{
+//   rs.end()
+// },1000*10)
+
 app.post('/stream',mediaStream.single('media'),async(req,res)=>{
-  // let inputPath = req.file.path
-  // let data = fs.readFileSync(req.file.path)
-  // res.send(fs.appendFileSync(inputPath,data))
- 
+  ffmpeg(req.file.path).save('audio.ts').run()
+  let readFile =  fs.readFileSync('audio.ts')
+  rs.write(readFile)
+  res.send('ok')
 })
 
 app.listen(3000,()=>{
