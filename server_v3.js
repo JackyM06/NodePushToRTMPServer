@@ -39,9 +39,9 @@ io.on('connection', socket => {
   // 断开连接，停止推流
   socket.on('end',()=>{
     console.log(urlSymbol+":结束推流")
+    rs.end() //关闭转换流也会联动关闭rtmp连接
     if(urlHash)fs.unlinkSync(`mediaCache/${urlHash}.ts`)
-    rs.end()
     isEnd = true
   })
 })
-server.listen(3000)
+server.listen(8090)
