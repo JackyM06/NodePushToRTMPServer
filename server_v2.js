@@ -9,8 +9,8 @@ var multer  = require('multer')
 const mediaStream = multer({ dest: 'mediaCache/' })
 
 const ffmpeg = require('fluent-ffmpeg')
-// const outputPath = 'rtmp://localhost:1935/live/home'
-const outputPath = 'rtmp://39.106.198.9:1935/live/home'
+const outputPath = 'rtmp://localhost:1935/live/home'
+// const outputPath = 'rtmp://39.106.198.9:1935/live/home'
 
 const transformStream = require('./transform')
 const rs = new transformStream()
