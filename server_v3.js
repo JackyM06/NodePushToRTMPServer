@@ -10,7 +10,7 @@ const {ffmpegRun,pushStream} = require('./commonFunction')
 
 const transformStream = require('./transform')
 const fnv = require('fnv-plus');
-
+fs.mkdirSync('mediaCache')
 // 定义websocket连接池
 io.on('connection', socket => {
   // 连接后创建一个传输流
@@ -40,7 +40,7 @@ io.on('connection', socket => {
   socket.on('end',()=>{
     console.log(urlSymbol+":结束推流")
     rs.end() //关闭转换流也会联动关闭rtmp连接
-    if(urlHash)fs.unlinkSync(`mediaCache/${urlHash}.ts`)
+    if(urlHash)fs.unlinkSync(`./mediaCache/${urlHash}.ts`)
     isEnd = true
   })
 })
