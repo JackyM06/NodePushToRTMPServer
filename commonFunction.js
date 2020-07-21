@@ -23,6 +23,11 @@ function ffmpegRun(input,output){
     .format('flv')
     .output(output)
     .run()
+  try{
+    fs.mkdirSync('mediaCache')
+  }catch(err){
+    console.log('mediaCache已创建')
+  }
 }
 
 async function pushStream(input,rs,filename){

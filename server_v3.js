@@ -10,7 +10,7 @@ const {ffmpegRun,pushStream} = require('./commonFunction')
 
 const transformStream = require('./transform')
 const fnv = require('fnv-plus');
-fs.mkdirSync('mediaCache')
+
 // 定义websocket连接池
 io.on('connection', socket => {
   // 连接后创建一个传输流
