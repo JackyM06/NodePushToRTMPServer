@@ -16,6 +16,7 @@ function ffmpegRun(input,output){
       console.log('error: ' + err.message);
       console.log('stdout: ' + stdout);
       console.log('stderr: ' + stderr);
+      socket.emit('startError',err.message) //socket向客户端返回错误信息
     })
     .on('end', function () {
       console.log('[' + new Date() + '] Stream Pushing is Finished !');

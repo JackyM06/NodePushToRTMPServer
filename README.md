@@ -16,6 +16,20 @@
 - 运行
   - `npm run dev`
 
+
+
+## 通信接口
+
+| 服务端接受的接口                                 | 服务端响应接口                                               |
+| ------------------------------------------------ | ------------------------------------------------------------ |
+| 客户端与服务端连接后                             | socket.emit('connected') //websocket连接成功                 |
+| socket.on("start", url） url:推流地址            | socket.emit('started') //推流指令发送成功 socket.emit('startError',message) |
+| socket.on("sendBlob", blob） blob:音视频blob对象 | socket.emit('sent') //blob对象推流成功                       |
+| socket.on('end'）                                | socket.emit('ended') //推流结束成功                          |
+
+
+
+
 ## 前端部分DEMO
 
 提供一个与该Node服务衔接的前端部分为你提供测试与参考[Demo]( https://gitee.com/JackyM06/WebPushMedia)
