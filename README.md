@@ -23,7 +23,7 @@
 | 服务端接受的接口                                 | 服务端响应接口                                               |
 | ------------------------------------------------ | ------------------------------------------------------------ |
 | 客户端与服务端连接后                             | socket.emit('connected') //websocket连接成功                 |
-| socket.on("start", url） url:推流地址            | socket.emit('started') //推流指令发送成功 socket.emit('startError',message) |
+| socket.on("start", url） url:推流地址            | socket.emit('started') //ffmpeg指令发送成功 socket.emit('startError',message)ffmpeg出错 |
 | socket.on("sendBlob", blob） blob:音视频blob对象 | socket.emit('sent') //blob对象推流成功                       |
 | socket.on('end'）                                | socket.emit('ended') //推流结束成功                          |
 

@@ -1,7 +1,7 @@
 const ffmpeg = require('fluent-ffmpeg')
 const fs = require('fs')
 
-function ffmpegRun(input,output){
+function ffmpegRun(input,output,socket){
   ffmpeg(input)
     .addOptions([
       '-codec:a aac',

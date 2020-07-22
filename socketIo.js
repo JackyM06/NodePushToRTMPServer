@@ -38,14 +38,16 @@ module.exports = io =>{
     socket.on('end',()=>{
       console.log(urlSymbol+":结束推流")
       rs.end() //关闭转换流也会联动关闭rtmp连接
-      isEnd = true
-      socket.emit('ended') //向客户端发送消息，停止成功
-      setTimeout(()=>{
-        if(urlHash){
+      if(urlHash && !isEnd){
+        try{
           fs.unlinkSync(`./mediaCache/${urlHash}.ts`)
           console.log(urlSymbol+":缓存已清除")
+        }catch(err){
+          console.log('暂无缓存')
         }
-      },1000)
+      }
+      isEnd = true
+      socket.emit('ended') //向客户端发送消息，停止成功
     })
   })
 }
