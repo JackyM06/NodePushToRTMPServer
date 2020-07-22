@@ -49,5 +49,19 @@ module.exports = io =>{
       isEnd = true
       socket.emit('ended') //向客户端发送消息，停止成功
     })
+
+    // 客户端强制断开连接后
+    socket.on('disconnect',()=>{
+      console.log(urlSymbol+":断开连接")
+      if(rs)rs.end() //关闭转换流也会联动关闭rtmp连接
+      if(urlHash && !isEnd){
+        try{
+          fs.unlinkSync(`./mediaCache/${urlHash}.ts`)
+          console.log(urlSymbol+":缓存已清除")
+        }catch(err){
+          console.log('暂无缓存')
+        }
+      }
+    })
   })
 }
