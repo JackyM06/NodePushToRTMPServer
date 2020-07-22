@@ -2,7 +2,7 @@ module.exports = io =>{
   const transformStream = require('./transform')
   const fnv = require('fnv-plus');
   const fs = require('fs')
-  const {ffmpegRun,pushStream} = require('./commonFunction')
+  const {ffmpegRun,pushStream,pushFile} = require('./commonFunction')
   const stream = require('stream')
   // 定义websocket连接池
   io.on('connection', socket => {
@@ -61,6 +61,18 @@ module.exports = io =>{
         }catch(err){
           console.log('暂无缓存')
         }
+      }
+    })
+
+    // 趣味实验 --
+    // 接受文件
+    socket.on("sendFileBlob", blob => {
+      if(!isEnd){
+        console.log(urlSymbol+':持续推流中')
+        let bufferStream = stream.PassThrough()
+        bufferStream.end(blob)
+        pushFile(bufferStream,rs,`mediaCache/${urlHash}.ts`)
+        socket.emit('sent') //向客户端发送消息，blob包发送成功
       }
     })
   })
