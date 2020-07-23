@@ -1,34 +1,51 @@
 const ffmpeg = require('fluent-ffmpeg')
 const fs = require('fs')
 
-function ffmpegRun(input,output,socket){
+function ffmpegRun(input,output,socket,type='audio'){
+  let command = 
   ffmpeg(input)
-    .addOptions([
-      '-codec:a aac',
-      '-ac 2',
-      '-ar 44100',
-    ])
     .on('start', function (commandLine) {
       console.log('[' + new Date() + '] Stream is Pushing !');
       console.log('commandLine: ' + commandLine);
     })
     .on('error', function (err, stdout, stderr) {
-      console.log('error: ' + err.message);
-      console.log('stdout: ' + stdout);
-      console.log('stderr: ' + stderr);
-      socket.emit('startError',err.message) //socket向客户端返回错误信息
+      if(!err.message.includes('ffmpeg was killed')){
+        console.log('error: ' + err.message);
+        console.log('stdout: ' + stdout);
+        console.log('stderr: ' + stderr);
+        socket.emit('startError',err.message) //socket向客户端返回错误信息
+      }
     })
     .on('end', function () {
       console.log('[' + new Date() + '] Stream Pushing is Finished !');
     })
+    .native()
     .format('flv')
     .output(output)
-    .run()
+  if(type === 'audio'){
+    command.addOptions([
+      '-codec:a aac',
+      '-ac 2',
+      '-ar 44100',
+    ])
+  }else if(type === 'video'){
+    command.addOptions([
+      'c:v libx264',
+      '-codec:a aac',
+      'ac 2',
+      'ar 44100',
+      'b:a 96k'
+    ])
+  }else{
+    return socket.emit('startError','暂不支持该类型推流！')
+  }
+  command.run()
   try{
     fs.mkdirSync('mediaCache')
   }catch(err){
     console.log('mediaCache已创建')
   }
+  return command
 }
 
 async function pushStream(input,rs,filename){

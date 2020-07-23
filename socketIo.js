@@ -12,15 +12,15 @@ module.exports = io =>{
     let isEnd = true
     let urlSymbol // 连接池中的url缓存
     let urlHash // 连接池中url对应的hash
-    
+    let command
     socket.emit('connected') //向客户端发送消息，连接成功
 
     // 创建推流 url => 推流地址
-    socket.on("start", url => {
+    socket.on("start", (url,type)=> {
       urlSymbol = url 
       urlHash = fnv.hash(url,64).str()
       console.log(urlSymbol+':开始RTMP推流,等待数据流中')
-      ffmpegRun(rs,url,socket)
+      command = ffmpegRun(rs,url,socket,type)
       isEnd = false
       socket.emit('started') //向客户端发送消息，成功开始
     })
@@ -37,6 +37,7 @@ module.exports = io =>{
     // 断开连接，停止推流
     socket.on('end',()=>{
       console.log(urlSymbol+":结束推流")
+      if(command) command.kill()
       rs.end() //关闭转换流也会联动关闭rtmp连接
       if(urlHash && !isEnd){
         try{
