@@ -4,11 +4,11 @@ const fs = require('fs')
 function ffmpegRun(input,output,socket,type='audio'){
   let command = 
   ffmpeg(input)
-    .on('start', function (commandLine) {
+    .on('start', (commandLine) => {
       console.log('[' + new Date() + '] Stream is Pushing !');
       console.log('commandLine: ' + commandLine);
     })
-    .on('error', function (err, stdout, stderr) {
+    .on('error', (err, stdout, stderr) => {
       if(!err.message.includes('ffmpeg was killed')){
         console.log('error: ' + err.message);
         console.log('stdout: ' + stdout);
@@ -16,8 +16,9 @@ function ffmpegRun(input,output,socket,type='audio'){
         socket.emit('startError',err.message) //socket向客户端返回错误信息
       }
     })
-    .on('end', function () {
+    .on('end', () => {
       console.log('[' + new Date() + '] Stream Pushing is Finished !');
+      socket.emit('ended')
     })
     .native()
     .format('flv')
