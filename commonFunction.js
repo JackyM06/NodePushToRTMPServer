@@ -20,9 +20,6 @@ function ffmpegRun(input,output,socket,type='audio'){
       console.log('[' + new Date() + '] Stream Pushing is Finished !');
       socket.emit('ended')
     })
-    .native()
-    .format('flv')
-    .output(output)
   if(type === 'audio'){
     command.addOptions([
       '-codec:a aac',
@@ -30,17 +27,17 @@ function ffmpegRun(input,output,socket,type='audio'){
       '-ar 44100',
     ])
   }else if(type === 'video'){
-    command.addOptions([
-      'c:v libx264',
-      '-codec:a aac',
-      'ac 2',
-      'ar 44100',
-      'b:a 96k'
-    ])
+    command
+    .videoCodec('libx264')
+    .size('640x?').aspect('4:3').autopad()
   }else{
     return socket.emit('startError','暂不支持该类型推流！')
   }
-  command.run()
+  command
+  .native()
+  .format('flv')
+  .output(output)
+  .run()
   try{
     fs.mkdirSync('mediaCache')
   }catch(err){
