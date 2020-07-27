@@ -78,12 +78,12 @@ module.exports = io =>{
       }
     })
     // 接受FileUrl
-    socket.on("sendFileUrl", (FileUrl,url,type) => {
+    socket.on("sendFileUrl", (FileUrl,url) => {
       console.log('FileUrl,url: ', FileUrl,url);
       console.log("文件URL推流开始")
       urlSymbol = url
       urlHash = fnv.hash(url,64).str()
-      command = ffmpegRun(FileUrl,url,socket,type)
+      command = ffmpegRun(FileUrl,url,socket,"video")
       socket.emit('sent') //向客户端发送消息，blob包发送成功
     })
   })
