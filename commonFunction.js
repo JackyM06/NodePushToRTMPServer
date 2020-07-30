@@ -57,15 +57,12 @@ async function pushStream(input,rs,filename){
 }
 // 趣味实验
 //  推送文件
-async function pushFile(input,rs,filename){
-  ffmpeg(input).save(filename).on('end',()=>{
-    try{
-      let readFile = fs.readFileSync(filename)
-      rs.write(readFile)
-    }catch(err){
-      console.log('缓存文件正在生成中')
-    }
-  }).run()
+async function pushFile(input,rs){
+  try{
+    rs.write(input)
+  }catch(err){
+    console.log('缓存文件正在生成中')
+  }
   
 }
 

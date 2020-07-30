@@ -1,20 +1,20 @@
-const stream = require('stream');
+const stream = require('stream')
 
 class transformStream extends stream.Transform {
   constructor() {
-    super();
-    this.tailPiece = '';
+    super()
+    this.tailPiece = ''
   }
   _transform(chunk, encoding, callback) {
     this.tailPiece = chunk
-    this.push(this.tailPiece);       //[3]
-    callback();
+    this.push(this.tailPiece)
+    callback()
   }
 
   _flush(callback) {
-    this.push(this.tailPiece);
-    callback();
+    this.push(this.tailPiece)
+    callback()
   }
 }
 
-module.exports =  transformStream;
+module.exports =  transformStream
