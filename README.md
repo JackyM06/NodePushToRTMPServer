@@ -4,17 +4,83 @@
 >
 > Node服务通过获取来自Web客户端采集的实时原始音频数据，在将这些数据进行处理后持续推流到RTMP服务器上。实现H5直播推流到RTMP服务器上，不再让页面依赖Flash :)
 
-## 运行步骤
+## 安装步骤
 
-- 首先要求你Node服务所部署的环境中需要安装**ffmpeg**：以下仅仅介绍Windows端安装步骤
-  - 去到**ffmpeg**官网 ，将安装包下载后**解压**
-  - 将解压后的文件夹下的**bin**目录添加到系统环境变量**Path**
-  - 终端命令行中输入`ffmpeg -version `检测是否安装成功
-- **clone**项目
-- 下载依赖
-  - `npm i`
-- 运行
-  - `npm run dev`
+1. 运行环境需要具备 Node.js V8及以上版本 和 NPM V6及以上版本
+
+2. 使用淘宝镜像
+
+   ```shell
+   - 命令行中执行如下命令
+   npm install -g cnpm --registry=https://registry.npm.taobao.org
+   ```
+
+3. 安装Node服务进程管理工具
+
+   1. [Linux]环境
+
+      ```shell
+      npm install pm2 -g
+      ```
+
+   2. [Windows]环境
+
+      ```shell
+      npm install nodemon -g
+      ```
+
+4. 安装FFmpeg应用
+
+   1. Windows下
+
+      ```shell
+      - 去到ffmpeg官网 ，将安装包下载后解压
+      - 将解压后的文件夹下的bin目录添加到系统环境变量Path中
+      - 终端命令行中输入`ffmpeg -version `检测是否安装成功
+      ```
+
+   2. Ubuntu下
+
+      ```shell
+      - 依次执行一下命令以完成安装
+      sudo add-apt-repository ppa:kirillshkrogalev/ffmpeg-next 
+      sudo apt-get update 
+      sudo apt-get install ffmpeg
+      
+      - 执行 ffmpeg -version 检测是否安装成功
+      ```
+
+## 运行
+
+
+
+1. 进入`NodePushToRTMPServer`文件夹下
+
+2. 安装依赖
+
+   ```shell
+   cnpm install
+   ```
+
+3. 启动服务
+
+   1. [Linux]环境
+
+      ```shell
+      pm2 start index.js
+      ```
+
+   2. [Windows]环境
+
+      ```shell
+      nodemon index.js
+      ```
+
+
+
+## 备注
+
+> 默认启动端口为8090，如需修改请在index.js中，更改server.listen方法中的参数。
 
 
 
