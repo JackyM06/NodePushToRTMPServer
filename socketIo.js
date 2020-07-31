@@ -5,9 +5,17 @@ module.exports = io =>{
   const {ffmpegRun,pushStream,pushFile} = require('./commonFunction')
   const stream = require('stream')
 
-  function msgFormat(url,msg){
+  function msgFormat(url,msg,socket){
     let date = new Date().toLocaleString()
-    console.log(`[${date}][${url}]:${msg}`)
+    let ip = ""
+    if(socket){ //获取IP地址
+      if(socket.handshake.headers['x-forwarded-for'] != null){
+        ip = socket.handshake.headers['x-forwarded-for'];
+      }else{
+        ip = socket.handshake.address;
+      }
+    }
+    console.log(`[${date}][${ip || 'SteamingHost'} ---> ${url || 'TargetHost'}]:${msg}`)
     return true
   }
   // 定义websocket连接池
@@ -25,7 +33,7 @@ module.exports = io =>{
     socket.on("start", (url,type)=> {
       urlSymbol = url
       urlHash = fnv.hash(url,64).str()
-      msgFormat(urlSymbol,"开始RTMP推流,等待数据流中")
+      msgFormat(urlSymbol,"开始RTMP推流,等待数据流中",socket)
       command = ffmpegRun(rs,url,socket,type)
       isEnd = false
       socket.emit('started') //向客户端发送消息，成功开始
@@ -33,7 +41,7 @@ module.exports = io =>{
     // 接收blob，进行推流
     socket.on("sendBlob", blob => {
       if(!isEnd){
-        msgFormat(urlSymbol,"正在持续推流")
+        msgFormat(urlSymbol,"正在持续推流",socket)
         let bufferStream = stream.PassThrough()
         bufferStream.end(blob)
         pushStream(bufferStream,rs,`mediaCache/${urlHash}.ts`)
@@ -42,15 +50,15 @@ module.exports = io =>{
     })
     // 断开连接，停止推流
     socket.on('end',()=>{
-      msgFormat(urlSymbol,"结束推流")
+      msgFormat(urlSymbol,"结束推流",socket)
       if(command) command.kill()
       rs.end() //关闭转换流也会联动关闭rtmp连接
       if(urlHash && !isEnd){
         try{
           fs.unlinkSync(`./mediaCache/${urlHash}.ts`)
-          msgFormat(urlSymbol,"缓存已清除")
+          msgFormat(urlSymbol,"缓存已清除",socket)
         }catch(err){
-          msgFormat(urlSymbol,"暂无缓存")
+          msgFormat(urlSymbol,"暂无缓存",socket)
         }
       }
       isEnd = true
@@ -59,15 +67,15 @@ module.exports = io =>{
 
     // 客户端强制断开连接后
     socket.on('disconnect',()=>{
-      msgFormat(urlSymbol,"断开连接")
+      msgFormat(urlSymbol,"断开连接",socket)
       if(command) command.kill()
       if(rs)rs.end() //关闭转换流也会联动关闭rtmp连接
       if(urlHash && !isEnd){
         try{
           fs.unlinkSync(`./mediaCache/${urlHash}.ts`)
-          msgFormat(urlSymbol,"缓存已清除")
+          msgFormat(urlSymbol,"缓存已清除",socket)
         }catch(err){
-          msgFormat(urlSymbol,"暂无缓存")
+          msgFormat(urlSymbol,"暂无缓存",socket)
         }
       }
     })
