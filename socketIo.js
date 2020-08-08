@@ -84,7 +84,7 @@ module.exports = io =>{
     // 接受文件
     socket.on("sendFileBlob", blob => {
       if(!isEnd){
-        msgFormat(urlSymbol,"文件上传完成，开始推流中")
+        msgFormat(urlSymbol,"文件正在上传并推流中")
         pushFile(blob,rs)
         socket.emit('sent') //向客户端发送消息，blob包发送成功
       }
