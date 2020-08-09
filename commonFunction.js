@@ -25,11 +25,14 @@ function ffmpegRun(input,output,socket,type='audio'){
       '-codec:a aac',
       '-ac 2',
       '-ar 44100',
+      '-strict -2',
     ])
   }else if(type === 'video'){
     command
+    .addOptions([
+      '-strict -2',
+    ])
     .videoCodec('libx264')
-    .size('640x?').aspect('4:3').autopad()
   }else{
     return socket.emit('startError','暂不支持该类型推流！')
   }
