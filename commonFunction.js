@@ -62,7 +62,7 @@ async function pushStream(input,rs,filename){
 //  推送文件
 async function pushFile(input,rs){
   try{
-    rs.write(input)
+    if(input)rs.write(input)
   }catch(err){
     console.log('缓存文件正在生成中')
   }
