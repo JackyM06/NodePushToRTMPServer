@@ -2,15 +2,7 @@
 
 > 介绍
 >
-> 本服务通过获取来自Web客户端采集的实时原始音/视频数据，再将这些数据进行处理后持续推流到RTMP服务器上。实现H5直播推流到RTMP服务器，不再让页面依赖Flash 
-
-
-
-## 前端部分DEMO
-
-提供一个与该Node服务衔接的Vue前端项目，以帮助你测试与参考[WebPushMedia]( https://gitee.com/JackyM06/WebPushMedia)
-
-
+> 本node.js服务通过获取来自Web客户端采集的实时原始音/视频数据，再将这些数据进行处理后持续推流到RTMP服务器上。实现H5直播推流到RTMP服务器，不再让页面依赖Flash!
 
 ## 注意
 
@@ -27,6 +19,9 @@
 | socket.on("sendBlob", blob） blob:音视频blob对象 | socket.emit('sent') //blob对象推流成功                       |
 | socket.on('end'）                                | socket.emit('ended') //推流结束成功                          |
 
+## 前端部分DEMO
+
+提供一个与该Node服务衔接的Vue前端项目，以帮助你测试与参考[WebPushMedia]( https://gitee.com/JackyM06/WebPushMedia)
 
 
 ## 备注
